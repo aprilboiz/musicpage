@@ -1,0 +1,27 @@
+# Logging configuration
+logging:
+  level:
+    org:
+      springframework:
+        security: TRACE
+
+spring:
+  application:
+    name: "Music Page"
+
+#    Datasource configuration
+  datasource:
+    url: "jdbc:postgresql://localhost:5432/musicpage"
+    username: "spring"
+    password: "1"
+    driver-class-name: org.postgresql.Driver
+#    JPA configuration
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    show-sql: true
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+#  h2:
+#    console:
+#      enabled: true
