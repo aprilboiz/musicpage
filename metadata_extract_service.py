@@ -1,4 +1,3 @@
-import multiprocessing
 import os
 import signal
 import sys
@@ -22,18 +21,10 @@ def is_url(url_string):
         return False
 
 
-def shutdown_server():
-    func = request.environ.get('werkzeug.server.shutdown')
-    if func is None:
-        raise RuntimeError('Not running with the Werkzeug Server')
-    func()
-
-
 def handle_signal(signum, frame):
     current_process = psutil.Process(os.getpid())
     for child in current_process.children(recursive=True):
         child.terminate()
-    shutdown_server()
     sys.exit(0)
 
 
@@ -65,13 +56,7 @@ def extract_video_info():
     return jsonify(res), 200
 
 
-def run_server(q: multiprocessing.Queue):
-    @app.route("/api/shutdown", methods=["GET"])
-    def shutdown():
-        return 0
-
-    app.run(debug=True)
-
-
 if __name__ == "__main__":
+    signal.signal(signal.SIGTERM, handle_signal)
+    signal.signal(signal.SIGINT, handle_signal)
     app.run(debug=True)
