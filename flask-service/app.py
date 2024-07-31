@@ -1,10 +1,5 @@
-import os
-import signal
-import sys
-
-import psutil
 from flask import Flask, request, jsonify
-from pytube import YouTube
+from pytubefix import YouTube
 import urllib.parse
 
 app = Flask(__name__)
@@ -19,13 +14,6 @@ def is_url(url_string):
     except (ValueError, AttributeError):
         # If parsing fails, the string is not a URL
         return False
-
-
-def handle_signal(signum, frame):
-    current_process = psutil.Process(os.getpid())
-    for child in current_process.children(recursive=True):
-        child.terminate()
-    sys.exit(0)
 
 
 @app.route("/api/extract", methods=["GET"])
@@ -47,16 +35,16 @@ def extract_video_info():
         vid = YT_PREFIX + vid
 
     yt = YouTube(url=vid)
+    audio = yt.streams.get_audio_only()
+
     res = {
         "title": yt.title,
         "artist": yt.author,
         "duration": yt.length,
-        "playback_url": yt.streams.get_audio_only().url,
+        "playback_url": audio.url if audio is not None else None,
     }
     return jsonify(res), 200
 
 
 if __name__ == "__main__":
-    signal.signal(signal.SIGTERM, handle_signal)
-    signal.signal(signal.SIGINT, handle_signal)
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0")
