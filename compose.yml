@@ -1,0 +1,15 @@
+services:
+  spring-service:
+    build: .
+    ports:
+      - 8080:8080
+    networks:
+      - musicpage-network
+  flask-service:
+    build: flask-service
+    ports:
+      - 5000:5000
+    networks:
+      - musicpage-network
+networks:
+  musicpage-network:
