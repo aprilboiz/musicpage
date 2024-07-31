@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.IOException;
 
-@Component
+// @Component
 public class ExtractServiceManager {
     private static final Logger logger = LoggerFactory.getLogger(ExtractServiceManager.class);
     private Process extractService;
