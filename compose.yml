@@ -4,12 +4,22 @@ services:
   #   ports:
   #     - 8080:8080
   #   networks:
-  #     - musicpage-network
+  #     - music_page-network
   flask-service:
     build: flask-service
     ports:
       - 5000:5000
     networks:
-      - musicpage-network
+      - music_page-network
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_DB: music_page
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5432:5432
+    networks:
+      - music_page-network
 networks:
-  musicpage-network:
+  music_page-network:
