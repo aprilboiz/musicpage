@@ -7,10 +7,8 @@ import java.util.Set;
 
 public record SongUpload(
         String title,
-        String artist,
+        String author,
 
-//        @NotNull(message = "Song file is required")
-//        MultipartFile file,
         @NotNull(message = "Youtube ID is required")
         String yt_id,
 

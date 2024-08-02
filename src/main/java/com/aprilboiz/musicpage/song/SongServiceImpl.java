@@ -34,7 +34,11 @@ public class SongServiceImpl implements SongService{
     @Transactional
     @Override
     public Song save(SongUpload uploadSong) {
-        Optional<Song> existingSong = songRepository.findSongByYoutubeID(uploadSong.yt_id());
+        SongMetadata metadata = this.extractSongData(uploadSong.yt_id());
+        if (metadata == null){
+            throw new NotFoundException("Your song is not found.");
+        }
+        Optional<Song> existingSong = songRepository.findSongByYoutubeID(metadata.id());
         if (existingSong.isPresent()){
             throw new DuplicateException("Song already exists.");
         }
@@ -54,12 +58,15 @@ public class SongServiceImpl implements SongService{
         }
 
 //       check for title and artist
-        if (uploadSong.title() == null || uploadSong.artist() == null){
+        if (uploadSong.title() == null || uploadSong.author() == null){
             SongMetadata songMetadata = extractSongData(uploadSong.yt_id());
+            if (songMetadata == null){
+                throw new NotFoundException("Failed to extract song data.");
+            }
             uploadSong = new SongUpload(
                     songMetadata.title(),
-                    songMetadata.artist(),
-                    uploadSong.yt_id(),
+                    songMetadata.author(),
+                    songMetadata.id(),
                     uploadSong.emotions()
             );
         }
@@ -67,7 +74,7 @@ public class SongServiceImpl implements SongService{
         try {
             Song newSong = new Song(
                     uploadSong.title(),
-                    uploadSong.artist(),
+                    uploadSong.author(),
                     uploadSong.yt_id(),
                     uploadSong.emotions()
                             .stream()
@@ -118,7 +125,8 @@ public class SongServiceImpl implements SongService{
         try {
             return restTemplate.getForObject(extractServiceUrl + songUrl, SongMetadata.class);
         } catch (Exception e) {
-            throw new NotFoundException("Failed to extract song data. Reason: " + e.getMessage());
+            return null;
+//            throw new NotFoundException("Failed to extract song data. Reason: " + e.getMessage());
         }
     }
 }

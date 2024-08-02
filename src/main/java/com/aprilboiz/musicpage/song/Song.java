@@ -21,11 +21,8 @@ public class Song {
 
     @Column(nullable = false)
     private String title;
-    private String artist;
+    private String author;
 
-//    @Column(name = "data", nullable = false)
-//    @Lob
-//    private byte[] data;
     @Column(name = "youtube_id", nullable = false)
     private String youtubeID;
 
@@ -37,9 +34,9 @@ public class Song {
     )
     Set<Emotion> emotions = new HashSet<>();
 
-    public Song(String title, String artist, String youtubeID, Set<Emotion> emotions) {
+    public Song(String title, String author, String youtubeID, Set<Emotion> emotions) {
         this.title = title;
-        this.artist = artist;
+        this.author = author;
         this.youtubeID = youtubeID;
         this.emotions = emotions;
     }
@@ -48,7 +45,7 @@ public class Song {
         return new SongResponse(
                 id,
                 title,
-                artist,
+                author,
                 youtubeID,
                 emotions.stream().map(Emotion::getName).collect(Collectors.toSet()));
     }

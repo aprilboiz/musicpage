@@ -38,8 +38,9 @@ def extract_video_info():
     audio = yt.streams.get_audio_only()
 
     res = {
+        "id": yt.video_id,
         "title": yt.title,
-        "artist": yt.author,
+        "author": yt.author,
         "duration": yt.length,
         "playback_url": audio.url if audio is not None else None,
     }

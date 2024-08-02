@@ -1,8 +1,9 @@
 package com.aprilboiz.musicpage.song.dto;
 
 public record SongMetadata(
+        String id,
         String title,
-        String artist,
+        String author,
         String playback_url,
         Long duration
 ) {
